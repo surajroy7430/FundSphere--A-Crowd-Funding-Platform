@@ -1,9 +1,12 @@
+import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "@/components/ui/sonner";
-// import "ldrs/react/TailChase.css";
+import "ldrs/react/TailChase.css";
 
 const App = () => {
   return (
     <div className="min-h-screen">
+      <AppRoutes />
+
       <Toaster position="top-right" richColors closeButton />
     </div>
   );
