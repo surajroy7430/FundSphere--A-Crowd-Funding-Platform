@@ -1,9 +1,11 @@
 require("dotenv").config({ quiet: true });
 const express = require("express");
+const path = require("path");
 const logger = require("./utils/logger");
 const authRouter = require("./routes/auth.routes");
 const adminRouter = require("./routes/admin.routes");
 const profileRouter = require("./routes/profile.routes");
+const campaignRouter = require("./routes/campaign.routes");
 const applyMiddleware = require("./middlewares/applyMiddleware");
 const { connectToDB, disconnectDB } = require("./config/db");
 
@@ -21,10 +23,13 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // API routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/profile", profileRouter);
+app.use("/api/campaigns", campaignRouter);
 
 // Unknown Routes (404)
 app.use((req, res, next) => {

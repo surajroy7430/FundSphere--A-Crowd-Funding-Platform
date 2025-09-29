@@ -10,22 +10,32 @@ import {
   SidebarGroupContent,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useAuth } from "../context/AuthContext";
 
 export function NavMain({ mainButtons }) {
+  const { user } = useAuth();
   const { open, isMobile, toggleSidebar } = useSidebar();
   const location = useLocation();
 
   return (
     <>
       {mainButtons.map((item) => {
+        const filteredButtons = item.buttons.filter((btn) => {
+          if (!btn?.userTypes) return true;
+
+          return user?.userType?.some((type) => btn?.userTypes.includes(type));
+        });
+
+        if (filteredButtons.length === 0) return null;
+
         return (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel className="uppercase text-muted-foreground/60">
               {item.title}
             </SidebarGroupLabel>
-            <SidebarGroupContent className={open ? 'px-2' : ''}>
+            <SidebarGroupContent className={open ? "px-2" : ""}>
               <SidebarMenu>
-                {item.buttons.map((main) => {
+                {filteredButtons.map((main) => {
                   const isActive = location.pathname === main.path;
 
                   return (

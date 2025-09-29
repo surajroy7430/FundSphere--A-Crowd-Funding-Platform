@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Form,
   FormItem,
   FormField,
   FormControl,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { RiUser3Fill, RiMailFill, RiLockPasswordFill } from "@remixicon/react";
@@ -30,6 +32,9 @@ const signupSchema = z.object({
     .string()
     .trim()
     .min(6, "Password must be atleast 6 characters long"),
+  userType: z.enum(["creator", "donor", "both"], {
+    required_error: "Select a user type",
+  }),
   terms: z.literal(true),
 });
 
@@ -40,7 +45,13 @@ const SignupForm = () => {
   const form = useForm({
     resolver: zodResolver(signupSchema),
     mode: "onBlur",
-    defaultValues: { username: "", email: "", password: "", terms: false },
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      userType: "donor",
+      terms: false,
+    },
   });
 
   useEffect(() => {
@@ -48,7 +59,16 @@ const SignupForm = () => {
   }, []);
 
   const onSubmit = async (values) => {
-    const res = await register(values.username, values.email, values.password);
+    let userType = [];
+    if (values.userType === "both") userType = ["creator", "donor"];
+    else userType = [values.userType];
+
+    const res = await register(
+      values.username,
+      values.email,
+      values.password,
+      userType
+    );
 
     if (res.success) {
       toast.success(res.message);
@@ -94,6 +114,43 @@ const SignupForm = () => {
                       />
                     </FormControl>
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* User Type */}
+            <FormField
+              control={form.control}
+              name="userType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ToggleGroup
+                      type="single"
+                      value={field.value || "donor"}
+                      onValueChange={field.onChange}
+                    >
+                      <ToggleGroupItem
+                        value="donor"
+                        className="px-4 sm:px-8 py-2 border border-emerald-100 data-[state=on]:bg-emerald-300 data-[state=on]:text-white"
+                      >
+                        Donor
+                      </ToggleGroupItem>
+                      <ToggleGroupItem
+                        value="creator"
+                        className="px-4 sm:px-8 py-2 border border-emerald-100 data-[state=on]:bg-emerald-300 data-[state=on]:text-white"
+                      >
+                        Creator
+                      </ToggleGroupItem>
+                      <ToggleGroupItem
+                        value="both"
+                        className="px-4 sm:px-8 py-2 border border-emerald-100 data-[state=on]:bg-emerald-300 data-[state=on]:text-white"
+                      >
+                        Both
+                      </ToggleGroupItem>
+                    </ToggleGroup>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

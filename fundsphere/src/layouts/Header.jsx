@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/breadcrumb";
 import { CircleGauge } from "lucide-react";
 import { NavUser } from "../components/nav-user";
+import { useAuth } from "../context/AuthContext";
 import Notifications from "../components/notifications";
 
 const Header = () => {
+  const { user } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -55,18 +57,20 @@ const Header = () => {
 
         <div className="ml-auto flex gap-3 items-center">
           {/* <Notifications /> */}
-          <div className="sm:flex hidden">
-            <Button
-              onClick={() => navigate("/create-campaign")}
-              className={`${
-                1 > 0
-                  ? "bg-emerald-500 hover:bg-emerald-600"
-                  : "bg-violet-500 hover:bg-violet-600"
-              }`}
-            >
-              {1 > 0 ? "Create a Campaign" : "Connect"}
-            </Button>
-          </div>
+          {user?.userType.includes("creator") && (
+            <div className="sm:flex hidden">
+              <Button
+                onClick={() => navigate("/create-campaign")}
+                className={`${
+                  1 > 0
+                    ? "bg-emerald-500 hover:bg-emerald-600"
+                    : "bg-violet-500 hover:bg-violet-600"
+                }`}
+              >
+                {1 > 0 ? "Create a Campaign" : "Connect"}
+              </Button>
+            </div>
+          )}
           <NavUser />
         </div>
       </div>

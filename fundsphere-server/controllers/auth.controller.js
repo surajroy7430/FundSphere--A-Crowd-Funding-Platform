@@ -6,7 +6,7 @@ const User = require("../models/user.model");
 
 const register = async (req, res, next) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { username, email, password, role, userType } = req.body;
 
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: "User already exists" });
@@ -16,7 +16,23 @@ const register = async (req, res, next) => {
       Number(process.env.SALT_ROUNDES)
     );
 
-    user = new User({ username, email, password: hashed, role });
+    let types = [];
+    if (role === "admin") types = ["creator", "donor"];
+    else if (Array.isArray(userType) && userType.length > 0) {
+      types = userType.filter((t) => ["creator", "donor"].includes(t));
+    } else if (typeof userType === "string") {
+      types = userType === "both" ? ["creator", "donor"] : [userType];
+    } else {
+      types = ["donor"];
+    }
+
+    user = new User({
+      username,
+      email,
+      password: hashed,
+      role,
+      userType: types,
+    });
     await user.save();
 
     res

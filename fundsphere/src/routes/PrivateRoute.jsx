@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 import { TailChase } from "ldrs/react";
 
-const PrivateRoute = ({ roles }) => {
+const PrivateRoute = ({ roles, userTypes }) => {
   const { user, loading } = useAuth();
 
   if (loading)
@@ -14,7 +14,12 @@ const PrivateRoute = ({ roles }) => {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  // Role based access
   if (roles && !roles.includes(user.role))
+    return <Navigate to="/dashboard" replace />;
+
+  // User type based access
+  if (userTypes && !user.userType.some((type) => userTypes.includes(type)))
     return <Navigate to="/dashboard" replace />;
 
   return <Outlet />;

@@ -36,11 +36,13 @@ const menuButtons = {
           title: "Create Campaign",
           path: "/create-campaign",
           icon: Megaphone,
+          userTypes: ["creator"],
         },
         {
           title: "Payment",
           path: "/payment",
           icon: CreditCard,
+          userTypes: ["donor"],
         },
       ],
     },

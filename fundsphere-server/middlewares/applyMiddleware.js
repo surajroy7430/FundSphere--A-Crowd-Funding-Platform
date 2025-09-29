@@ -25,6 +25,11 @@ const applyMiddleware = (app) => {
   app.use(helmet());
   app.use(compression());
 
+  app.use("/uploads", (req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  })
+
   // Logging
   if (process.env.NODE_ENV !== "production") {
     app.use(
@@ -57,9 +62,9 @@ const applyMiddleware = (app) => {
       msg: err.message || "Internal Server Error",
     };
 
-    if (process.env.NODE_ENV !== "production") {
-      response.stack = err.stack;
-    }
+    // if (process.env.NODE_ENV !== "production") {
+    //   response.stack = err.stack;
+    // }
 
     res.status(statusCode).json(response);
   });

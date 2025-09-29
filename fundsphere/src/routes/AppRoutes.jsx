@@ -42,12 +42,38 @@ const AppRoutes = () => {
         </Route>
       </Route>
 
+      {/* Creator Specific Route */}
+      <Route
+        element={
+          <PrivateRoute
+            roles={["user", "moderator", "admin"]}
+            userTypes={["creator"]}
+          />
+        }
+      >
+        <Route element={<DashboardLayout />}>
+          <Route path="/create-campaign" element={<CreateCampaign />} />
+        </Route>
+      </Route>
+
+      {/* Donor Specific Route */}
+      <Route
+        element={
+          <PrivateRoute
+            roles={["user", "moderator", "admin"]}
+            userTypes={["donor"]}
+          />
+        }
+      >
+        <Route element={<DashboardLayout />}>
+          <Route path="/payment" element={<Payment />} />
+        </Route>
+      </Route>
+
       {/* Protected Routes */}
       <Route element={<PrivateRoute roles={["user", "moderator", "admin"]} />}>
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-campaign" element={<CreateCampaign />} />
-          <Route path="/payment" element={<Payment />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/notifications" element={<Notifications />} />

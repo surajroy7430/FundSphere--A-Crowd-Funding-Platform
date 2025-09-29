@@ -1,10 +1,20 @@
 import { useAuth } from "../../context/AuthContext";
+import { useFetch } from "../../hooks/use-fetch";
 import { Button } from "@/components/ui/button";
 import QuickStats from "../../components/admin/quick-stats";
 import UsersTable from "../../components/admin/users-table";
+import { Trash2 } from "lucide-react";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const { request, loading } = useFetch();
+
+  const handleDeleteDrafts = async () => {
+    await request({
+      url: "/api/campaigns/drafts",
+      method: "DELETE",
+    });
+  };
 
   return (
     <>
@@ -15,8 +25,20 @@ const AdminDashboard = () => {
             ({user?.role})
           </span>
         </h1>
-        <Button className="px-3" size="sm">
-          Settings
+        <Button
+          size="sm"
+          className="px-3"
+          variant="destructive"
+          disabled={loading}
+          onClick={handleDeleteDrafts}
+        >
+          {loading ? (
+            "Deleting..."
+          ) : (
+            <>
+              <Trash2 /> Draft Campaigns
+            </>
+          )}
         </Button>
       </div>
 

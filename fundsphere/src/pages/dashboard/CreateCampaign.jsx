@@ -1,9 +1,7 @@
-import React from 'react'
+import CampaignWizard from "../../components/campaign/CampaignWizard";
 
 const CreateCampaign = () => {
-  return (
-    <div>Create Campaign</div>
-  )
-}
+  return <CampaignWizard />;
+};
 
-export default CreateCampaign
+export default CreateCampaign;
